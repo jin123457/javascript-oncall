@@ -29,45 +29,49 @@ class App {
     const holidayVisited = new Array(holidayInput.split(',').length).fill(0);
     const weekdayVisited = new Array(weekdayInput.split(',').length).fill(0);
     const arr = [];
-
+    this.start = false;
     calendar.forEach((dayInfo) => {
       const { day, month, daysWord, holiday } = dayInfo;
 
-      if (holiday === true) {
-        this.visiteIndex = holidayVisited.indexOf(0);
+      if (dayWord === daysWord) this.start = true;
 
-        if (this.visiteIndex === -1) {
-          holidayVisited.fill(0);
-          this.visiteIndex = 0;
+      if (this.start) {
+        if (holiday === true) {
+          this.visiteIndex = holidayVisited.indexOf(0);
+
+          if (this.visiteIndex === -1) {
+            holidayVisited.fill(0);
+            this.visiteIndex = 0;
+          }
+          this.name = holidayInput.split(',')[this.visiteIndex];
+          if (arr.length > 0 && arr[arr.length - 1][3] === this.name) {
+            this.name = holidayInput.split(',')[this.visiteIndex + 1];
+            holidayVisited[this.visiteIndex + 1] = 1;
+          } else {
+            holidayVisited[this.visiteIndex] = 1;
+          }
+
+          if (daysWord === '토' || daysWord === '일') {
+            return arr.push([month, day, daysWord, this.name, '']);
+          }
+
+          return arr.push([month, day, daysWord, this.name, '(휴일)']);
         }
-        this.name = holidayInput.split(',')[this.visiteIndex];
+
+        this.wvisiteIndex = weekdayVisited.indexOf(0);
+        if (this.wvisiteIndex === -1) {
+          weekdayVisited.fill(0);
+          this.wvisiteIndex = 0;
+        }
+        this.name = weekdayInput.split(',')[this.wvisiteIndex];
         if (arr.length > 0 && arr[arr.length - 1][3] === this.name) {
-          this.name = holidayInput.split(',')[this.visiteIndex + 1];
-          holidayVisited[this.visiteIndex + 1] = 1;
+          this.name = weekdayInput.split(',')[this.wvisiteIndex + 1];
+          weekdayVisited[this.wvisiteIndex + 1] = 1;
         } else {
-          holidayVisited[this.visiteIndex] = 1;
+          weekdayVisited[this.wvisiteIndex] = 1;
         }
-
-        if (daysWord === '토' || daysWord === '일') {
-          return arr.push([month, day, daysWord, this.name, '']);
-        }
-
-        return arr.push([month, day, daysWord, this.name, '(휴일)']);
+        arr.push([month, day, daysWord, this.name, '']);
       }
-
-      this.wvisiteIndex = weekdayVisited.indexOf(0);
-      if (this.wvisiteIndex === -1) {
-        weekdayVisited.fill(0);
-        this.wvisiteIndex = 0;
-      }
-      this.name = weekdayInput.split(',')[this.wvisiteIndex];
-      if (arr.length > 0 && arr[arr.length - 1][3] === this.name) {
-        this.name = weekdayInput.split(',')[this.wvisiteIndex + 1];
-        weekdayVisited[this.wvisiteIndex + 1] = 1;
-      } else {
-        weekdayVisited[this.wvisiteIndex] = 1;
-      }
-      arr.push([month, day, daysWord, this.name, '']);
 
       return dayInfo;
     });
