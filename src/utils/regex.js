@@ -1,0 +1,3 @@
+const VALID_INPUT_IN_BRACKETS = /\d,./;
+
+export { VALID_INPUT_IN_BRACKETS };
