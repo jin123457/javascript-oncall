@@ -15,7 +15,32 @@ export default class Calendar {
     ]);
   }
 
-  async findDays(month) {
+  async create(month, dayWord) {
+    const calendar = [];
+    const firstDays = this.findFirstDayOfMonth(month)[0];
+    this.start = false;
+    for (let day = 1; day <= this.monthDate[month - 1]; day += 1) {
+      const monthdays = (firstDays + day - 1) % 7;
+      if (this.days[monthdays] === dayWord) this.start = true;
+      if (this.start) {
+        this.isHoliday = false;
+        const restDay = this.checkHoliday(month, day);
+        if (restDay || monthdays === 0 || monthdays === 6)
+          this.isHoliday = true;
+
+        calendar.push({
+          month,
+          day,
+          daysWord: this.days[monthdays],
+          holiday: this.isHoliday,
+        });
+      }
+    }
+
+    return calendar;
+  }
+
+  findFirstDayOfMonth(month) {
     const day = this.monthDate.slice(0, month - 1).reduce((acc, cur) => {
       const moveDay = cur % 7;
       const restDay = (acc + moveDay) % 7;
@@ -24,21 +49,12 @@ export default class Calendar {
     return [day, this.days[day]];
   }
 
-  async getMonth() {
-    return this.month;
-  }
-
-  async getNewYearDay() {
-    return this.newYearDay;
-  }
-
-  async getMonthDate() {
-    return this.monthDate;
-  }
-
-  async getHoliday(month, day) {
-    if (this.holiday.get(month)) {
-      if (this.holiday.get(month).some((days) => days === day)) return true;
+  checkHoliday(month, day) {
+    if (
+      this.holiday.get(month) &&
+      this.holiday.get(month).some((days) => days === day)
+    ) {
+      return true;
     }
 
     return false;
